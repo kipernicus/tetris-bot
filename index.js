@@ -4,30 +4,33 @@ async function run() {
   try {
     const create = process.env.CREATE;
     const players = process.env.PLAYERS || 2;
+
+    let gameId
     if (create) {
-      const gameId = await createGame(players);
-      console.log('GAMEID', gameId)
-      // const state = await getGameState(gameId)
-      const state = await joinGame(gameId);
-      let gameOver = false;
-      let nextState = state;
-      try {
-        do {
-          // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
-          nextState = await makeMove(gameId, nextState);
-          console.log("MADE A MOVE", nextState);
-        } while (nextState.data.state !== 'completed');
-      } catch (err) {
-        if (err.response) {
-          console.log('DEATH!!!', err.response.data)
-        } else {
-          throw err
-        }
-      }
+      gameId = await createGame(players);
     } else {
-      console.log("ERROR: NOT DONE");
+      gameId = process.env.GAME_ID
     }
 
+    const gameId = await createGame(players);
+    console.log('GAMEID', gameId)
+    // const state = await getGameState(gameId)
+    const state = await joinGame(gameId);
+    let gameOver = false;
+    let nextState = state;
+    try {
+      do {
+        // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
+        nextState = await makeMove(gameId, nextState);
+        console.log("MADE A MOVE", nextState);
+      } while (nextState.state !== 'completed');
+    } catch (err) {
+      if (err.response) {
+        console.log('DEATH!!!', err.response.data)
+      } else {
+        throw err
+      }
+    }
   } catch(err) {
     console.log('UNEXPECTED ERROR', err)
   }
@@ -42,7 +45,7 @@ async function joinGame(gameId) {
     const resp = await axios.post(
       `http://393d049b.ngrok.io/${gameId}/players`,
       {
-        name: "KMILLER"
+        name: process.env.NAME || "KMILLER"
       }
     );
     const turnToken = resp.headers["x-turn-token"];
