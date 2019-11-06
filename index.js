@@ -97,6 +97,7 @@ function determinePlacement(current_piece, board) {
 }
 
 function findBestOption(options, board) {
+  return options[3]
   let best = options[0]
   let bestScore = -10000
   for (let i=0; i < options.length; i++) {
@@ -174,7 +175,7 @@ function findPlacementOptions(current_piece, board) {
       const isEmpty = board[y][x] === null;
       const hasBelow = y === 0 || board[y - 1][x] !== null;
       if (isEmpty && hasBelow) {
-        const options = positionFunc(x, y);
+        const options = positionFunc(y, x);
         validPlacements = validPlacements.concat(
           options.filter(o => isValidPlacement(o, board))
         );
@@ -259,27 +260,27 @@ const oPositions = (row, col) => [
 const tPositions = (row, col) => [
   [
     [0, 0],
+    [0, 1],
+    [0, 2],
+    [-1, 1]
+  ],
+  [
+    [0, 0],
+    [-1, -1],
+    [-1, 0],
+    [-2, 0]
+  ],
+  [
+    [0, 0],
     [0, -1],
     [0, -2],
     [-1, -1]
   ],
   [
     [0, 0],
-    [-1, 0],
-    [-1, 1],
-    [-2, 0]
-  ],
-  [
-    [0, 0],
-    [0, 1],
-    [0, 2],
-    [1, 1]
-  ],
-  [
-    [0, 0],
-    [1, -1],
     [1, 0],
-    [2, 0]
+    [2, 0],
+    [1, 1]
   ]
 ].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
 
@@ -304,9 +305,9 @@ const sPositions = (row, col) => [
   ],
   [
     [0, 0],
-    [1, 0],
-    [1, 1],
-    [2, 1]
+    [-1, 0],
+    [-1, 1],
+    [-2, 1]
   ]
 ].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
 
@@ -314,26 +315,26 @@ const zPositions = (row, col) => [
   [
     [0, 0],
     [0, 1],
-    [1, 1],
-    [1, 2]
-  ],
-  [
-    [0, 0],
-    [1, 0],
-    [1, -1],
-    [2, -1]
-  ],
-  [
-    [0, 0],
-    [0, -1],
-    [-1, -1],
-    [-1, -2]
+    [-1, 1],
+    [-1, 2]
   ],
   [
     [0, 0],
     [-1, 0],
-    [-1, 1],
-    [-2, 1]
+    [-1, -1],
+    [-2, -1]
+  ],
+  [
+    [0, 0],
+    [0, -1],
+    [1, -1],
+    [1, -2]
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [2, 1]
   ]
 ].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
 
@@ -346,21 +347,21 @@ const jPositions = (row, col) => [
   ],
   [
     [0, 0],
-    [1, 0],
-    [2, 0],
-    [2, -1]
-  ],
-  [
-    [0, 0],
     [-1, 0],
     [-2, 0],
-    [-2, 1]
+    [-2, -1]
   ],
   [
     [0, 0],
-    [-1, 0],
-    [-1, -1],
-    [-1, -2]
+    [1, 0],
+    [2, 0],
+    [2, 1]
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [1, -1],
+    [1, -2]
   ]
 ].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
 
@@ -387,7 +388,7 @@ const lPositions = (row, col) => [
     [0, 0],
     [0, -1],
     [0, -2],
-    [1, -2]
+    [-1, -2]
   ]
 ].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
 
