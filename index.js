@@ -1,25 +1,34 @@
 const axios = require("axios");
 
 async function run() {
-  const create = process.env.CREATE;
-  const players = process.env.PLAYERS || 1;
-  if (create) {
-    const gameId = await createGame(players);
-    // const state = await getGameState(gameId)
-    const state = await joinGame(gameId);
-    let gameOver = false;
-    let nextState = state;
-    try {
-      do {
-        // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
-        nextState = await makeMove(gameId, nextState);
-        console.log("MADE A MOVE");
-      } while (!gameOver);
-    } catch (err) {
-      console.log('DEATH!!!', err.response.data)
+  try {
+    const create = process.env.CREATE;
+    const players = process.env.PLAYERS || 1;
+    if (create) {
+      const gameId = await createGame(players);
+      // const state = await getGameState(gameId)
+      const state = await joinGame(gameId);
+      let gameOver = false;
+      let nextState = state;
+      try {
+        do {
+          // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
+          nextState = await makeMove(gameId, nextState);
+          console.log("MADE A MOVE");
+        } while (!gameOver);
+      } catch (err) {
+        if (err.response) {
+          console.log('DEATH!!!', err.response.data)
+        } else {
+          throw err
+        }
+      }
+    } else {
+      console.log("ERROR: NOT DONE");
     }
-  } else {
-    console.log("ERROR: NOT DONE");
+
+  } catch(err) {
+    console.log('UNEXPECTED ERROR', err)
   }
 }
 
@@ -71,6 +80,7 @@ async function makeMove(gameId, state) {
 function determinePlacement(current_piece, board) {
   const options = findPlacementOptions(current_piece, board);
   const bestOption = findBestOption(options, board)
+  console.log(`PLACING ${current_piece} AT`, bestOption)
   return {
     locations: bestOption
   };
@@ -96,7 +106,6 @@ function scoreBoard(board) {
 }
 
 function simulateMove (move, board) {
-  const newBoard = [ ...board ]
   return board
 }
 
@@ -141,7 +150,7 @@ function findPlacementOptions(current_piece, board) {
       }
     }
   }
-  console.log(`VALID PLACEMENTS FOR ${current_piece} ARE`, validPlacements);
+  // console.log(`VALID PLACEMENTS FOR ${current_piece} ARE`, validPlacements);
   return validPlacements;
 }
 
@@ -327,21 +336,21 @@ const jPositions = (row, col) => [
 const lPositions = (row, col) => [
   [
     [0, 0],
-    [1, 0],
-    [2, 0],
-    [2, 1]
+    [-1, 0],
+    [-2, 0],
+    [-2, 1]
   ],
   [
     [0, 0],
     [0, 1],
     [0, 2],
-    [-1, 2]
+    [1, 2]
   ],
   [
     [0, 0],
-    [-1, 0],
-    [-2, 0],
-    [-2, -1]
+    [1, 0],
+    [2, 0],
+    [2, -1]
   ],
   [
     [0, 0],
