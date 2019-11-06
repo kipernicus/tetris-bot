@@ -65,93 +65,30 @@ function determinePlacement(data) {
   }
 }
 
-function placeS (options, next_piece, board) {
-  return [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-    { row: 1, col: 1 },
-    { row: 1, col: 2 },
-  ]
-}
-
-function placeZ (options, next_piece, board) {
-  return [
-    { row: 1, col: 0 },
-    { row: 1, col: 1 },
-    { row: 0, col: 1 },
-    { row: 0, col: 2 },
-  ]
-}
-
-function placeL (options, next_piece, board) {
-  return [
-    { row: 2, col: 0 },
-    { row: 1, col: 0 },
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-  ]
-}
-
-function placeO (options, next_piece, board) {
-  return [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-    { row: 1, col: 0 },
-    { row: 1, col: 1 },
-  ]
-}
-
-function placeT (options, next_piece, board) {
-  return [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-    { row: 0, col: 1 },
-    { row: 1, col: 1 },
-  ]
-}
-
-function placeI (options, next_piece, board) {
-  return [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-    { row: 0, col: 2 },
-    { row: 0, col: 3 },
-  ]
-}
-
-function placeJ (options, next_piece, board) {
-  return [
-    { row: 0, col: 0 },
-    { row: 0, col: 1 },
-    { row: 0, col: 2 },
-    { row: 1, col: 0 },
-  ]
-}
-
 function findPlacementOptions (current_piece, board) {
 
   let positionFunc, placement
   switch (current_piece) {
     case 'S':
-      placement = placeS()
+      placement = sPositions
       break;
     case 'Z':
-      placement = placeZ()
+      placement = zPositions
       break;
     case 'L':
-      placement = placeL()
+      placement = lPositions
       break;
     case 'O':
       positionFunc = oPositions
       break;
     case 'T':
-      placement = placeT()
+      placement = tPositions
       break;
     case 'I':
       positionFunc = iPositions
       break;
     case 'J':
-      placement = placeJ()
+      placement = jPositions
       break;
     default: console.error('UNEXPECTED PIECE TYPE')
   }
