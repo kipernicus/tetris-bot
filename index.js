@@ -76,7 +76,26 @@ function determinePlacement(data) {
 }
 
 function findBestOption(options, board) {
-  return options[0]
+  let best = options[0]
+  let bestScore = -1
+  for (let i=0; i < options.length; i++) {
+    const option = options[i]
+    const newBoard = simulateMove(option)
+    const score = scoreBoard(newBoard)
+    if (score > bestScore) {
+      bestScore = score
+      best = option
+    }
+  }
+  return best
+}
+
+function scoreBoard(board) {
+  return -1000
+}
+
+function simulateMove (move, board) {
+  return board
 }
 
 function findPlacementOptions(current_piece, board) {
