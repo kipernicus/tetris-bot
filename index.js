@@ -63,7 +63,6 @@ async function makeMove(gameId, state) {
   const { current_piece, next_piece, players } = data;
   const { board } = players.find(p => p.name === "KMILLER");
   const move = determinePlacement(current_piece, board);
-  const newBoard = simulateMove(move, board)
   const resp = await axios.post(
     `http://393d049b.ngrok.io/${gameId}/moves`,
     move,
@@ -77,10 +76,21 @@ async function makeMove(gameId, state) {
   return { turnToken: nextTurnToken, data: resp.data };
 }
 
+function printBoard(board) {
+  console.log('BOARD IS:')
+  for(let y = board.length-1; y >= 0; y--) {
+    const row = board[y]
+    const cleanRow = row.map(v => v === null ? '-' : v)
+    console.log(cleanRow)
+  }
+}
+
 function determinePlacement(current_piece, board) {
   const options = findPlacementOptions(current_piece, board);
   const bestOption = findBestOption(options, board)
   console.log(`PLACING ${current_piece} AT`, bestOption)
+  const newBoard = simulateMove(bestOption, board)
+  printBoard(newBoard)
   return {
     locations: bestOption
   };
@@ -88,10 +98,11 @@ function determinePlacement(current_piece, board) {
 
 function findBestOption(options, board) {
   let best = options[0]
-  let bestScore = -1
+  let bestScore = -10000
   for (let i=0; i < options.length; i++) {
     const option = options[i]
-    const newBoard = simulateMove(option)
+    // const newBoard = simulateMove(option, board)
+    const newBoard = board
     const score = scoreBoard(newBoard)
     if (score > bestScore) {
       bestScore = score
@@ -102,11 +113,27 @@ function findBestOption(options, board) {
 }
 
 function scoreBoard(board) {
-  return -1000
+  let score = 0
+  const baseRowScore = 10
+  for(let y = 0; y < board.length; y++) {
+    const row = board[y]
+    const rowScore = baseRowScore - y
+    for (let x = 0; x < row.length; x++) {
+      if (row[x] !== null) score += rowScore
+    }
+    if (row.indexOf(null) === -1) score += 50
+  }
+  return score
 }
 
 function simulateMove (move, board) {
-  return board
+  const newBoard = board.slice(0)
+  for (let i = 0; i < move.length; i++) {
+    const coord = move[i]
+    newBoard[coord.row][coord.col] = '#'
+    console.log('UPDATING', coord)
+  }
+  return newBoard
 }
 
 function findPlacementOptions(current_piece, board) {
