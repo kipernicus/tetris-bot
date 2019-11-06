@@ -127,7 +127,11 @@ function scoreBoard(board) {
 }
 
 function simulateMove (move, board) {
-  const newBoard = board.slice(0)
+  const newBoard = []
+  for (let y = 0; y < board.length; y++) {
+    const row = board[y]
+    newBoard.push(row.slice(0))
+  }
   for (let i = 0; i < move.length; i++) {
     const coord = move[i]
     newBoard[coord.row][coord.col] = '#'
