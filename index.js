@@ -51,7 +51,10 @@ async function createGame(players) {
 
 async function makeMove(gameId, state) {
   const { data, turnToken } = state;
-  const move = determinePlacement(data);
+  const { current_piece, next_piece, players } = data;
+  const { board } = players.find(p => p.name === "KMILLER");
+  const move = determinePlacement(current_piece, board);
+  const newBoard = simulateMove(move, board)
   const resp = await axios.post(
     `http://393d049b.ngrok.io/${gameId}/moves`,
     move,
@@ -65,9 +68,7 @@ async function makeMove(gameId, state) {
   return { turnToken: nextTurnToken, data: resp.data };
 }
 
-function determinePlacement(data) {
-  const { current_piece, next_piece, players } = data;
-  const { board } = players.find(p => p.name === "KMILLER");
+function determinePlacement(current_piece, board) {
   const options = findPlacementOptions(current_piece, board);
   const bestOption = findBestOption(options, board)
   return {
@@ -95,6 +96,7 @@ function scoreBoard(board) {
 }
 
 function simulateMove (move, board) {
+  const newBoard = [ ...board ]
   return board
 }
 
