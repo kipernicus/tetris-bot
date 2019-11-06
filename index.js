@@ -15,8 +15,8 @@ async function run() {
         do {
           // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
           nextState = await makeMove(gameId, nextState);
-          console.log("MADE A MOVE");
-        } while (!gameOver);
+          console.log("MADE A MOVE", nextState);
+        } while (nextState.state !== 'completed');
       } catch (err) {
         if (err.response) {
           console.log('DEATH!!!', err.response.data)
@@ -98,6 +98,7 @@ function determinePlacement(current_piece, board) {
 }
 
 function findBestOption(options, board) {
+  if (options.length === 0) throw new Error('NO MORE VALID OPTIONS - GAME OVER')
   let best = options[0]
   let bestScore = -10000
   for (let i=0; i < options.length; i++) {
@@ -118,9 +119,13 @@ function scoreBoard(board) {
   const baseRowScore = 10
   for(let y = 0; y < board.length; y++) {
     const row = board[y]
-    const rowScore = baseRowScore - y
+    const rowScore = (baseRowScore - y) * 3
     for (let x = 0; x < row.length; x++) {
       if (row[x] !== null) score += rowScore
+      if (board[y][x] === null && (y < board.length-1 && board[y+1][x] !== null)) { // is this a hole?
+        console.log('HOLE AT', `(${x},${y}`)
+        score -= 10
+      }
     }
     if (row.indexOf(null) === -1) score += 50
   }
