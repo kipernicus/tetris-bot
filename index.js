@@ -3,7 +3,7 @@ const axios = require("axios");
 async function run() {
   try {
     const create = process.env.CREATE;
-    const players = process.env.PLAYERS || 2;
+    const players = process.env.PLAYERS || 1;
 
     let gameId
     if (create) {
@@ -118,12 +118,31 @@ function findBestOption(options, board) {
 
 function scoreBoard(board) {
   let score = 0
-  const baseRowScore = 10
+  const baseRowScore = 20
   for(let y = 0; y < board.length; y++) {
     const row = board[y]
     const rowScore = (baseRowScore - y) * 3
     for (let x = 0; x < row.length; x++) {
-      if (row[x] !== null) score += rowScore
+      if (row[x] !== null) {
+        score += rowScore
+      } else {
+        // above
+        if ((y < board.length-1 && board[y+1][x] !== null)) {
+          score -= (baseRowScore - y) * 5
+        }
+        // left
+        if (x === 0 || (row[x-1] !== null)) {
+          score -= (baseRowScore - y) * 2
+        }
+        // right
+        if (x === row.length-1 || (row[x+1] !== null)) {
+          score -= (baseRowScore - y) * 2
+        }
+        // below
+        if (y === 0 || (board[y-1][x] !== null)) {
+          score -= (baseRowScore - y) * 3
+        }
+      }
       if (board[y][x] === null && (y < board.length-1 && board[y+1][x] !== null)) { // is this a hole?
         console.log('HOLE AT', `(${x},${y}`)
         score -= 10
