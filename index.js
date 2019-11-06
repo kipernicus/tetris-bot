@@ -12,7 +12,6 @@ async function run() {
       gameId = process.env.GAME_ID
     }
 
-    const gameId = await createGame(players);
     console.log('GAMEID', gameId)
     // const state = await getGameState(gameId)
     const state = await joinGame(gameId);
@@ -23,7 +22,7 @@ async function run() {
         // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
         nextState = await makeMove(gameId, nextState);
         console.log("MADE A MOVE", nextState);
-      } while (nextState.state !== 'completed');
+      } while (nextState.data.state !== 'completed');
     } catch (err) {
       if (err.response) {
         console.log('DEATH!!!', err.response.data)
