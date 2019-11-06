@@ -9,11 +9,15 @@ async function run() {
     const state = await joinGame(gameId);
     let gameOver = false;
     let nextState = state;
-    do {
-      // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
-      nextState = await makeMove(gameId, nextState);
-      console.log("MADE A MOVE");
-    } while (!gameOver);
+    try {
+      do {
+        // console.log('STATE IS:', JSON.stringify(nextState, null, 2))
+        nextState = await makeMove(gameId, nextState);
+        console.log("MADE A MOVE");
+      } while (!gameOver);
+    } catch (err) {
+      console.log('DEATH!!!', err.response.data)
+    }
   } else {
     console.log("ERROR: NOT DONE");
   }
@@ -64,12 +68,15 @@ async function makeMove(gameId, state) {
 function determinePlacement(data) {
   const { current_piece, next_piece, players } = data;
   const { board } = players.find(p => p.name === "KMILLER");
-  console.log("CURRENT STATE", current_piece, board);
   const options = findPlacementOptions(current_piece, board);
-  console.log('GOT OPTIPNS')
+  const bestOption = findBestOption(options, board)
   return {
-    locations: options[0]
+    locations: bestOption
   };
+}
+
+function findBestOption(options, board) {
+  return options[0]
 }
 
 function findPlacementOptions(current_piece, board) {
