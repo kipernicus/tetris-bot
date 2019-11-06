@@ -97,13 +97,12 @@ function determinePlacement(current_piece, board) {
 }
 
 function findBestOption(options, board) {
-  return options[3]
   let best = options[0]
   let bestScore = -10000
   for (let i=0; i < options.length; i++) {
     const option = options[i]
-    // const newBoard = simulateMove(option, board)
-    const newBoard = board
+    const newBoard = simulateMove(option, board)
+    // const newBoard = board
     const score = scoreBoard(newBoard)
     if (score > bestScore) {
       bestScore = score
@@ -124,6 +123,7 @@ function scoreBoard(board) {
     }
     if (row.indexOf(null) === -1) score += 50
   }
+  console.log('SCORE IS', score)
   return score
 }
 
