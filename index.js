@@ -11,7 +11,7 @@ async function run () {
     let gameOver = false
     let nextState = state
     do {
-      const nextState = await makeMove(gameId, nextState)
+      nextState = await makeMove(gameId, nextState)
     } while (!gameOver)
   } else {
     console.log('ERROR: NOT DONE')
@@ -43,7 +43,7 @@ async function createGame (players) {
 
 async function makeMove (gameId, state) {
   const { data, turnToken } = state
-  const move = determinePlacement(state)
+  const move = determinePlacement(data)
   return axios.post(`http://393d049b.ngrok.io/${gameId}/moves`, move, {
     headers: {
       'x-turn-token': turnToken
@@ -52,7 +52,25 @@ async function makeMove (gameId, state) {
 }
 
 function determinePlacement(data) {
-  const { current_piece, next_piece, board  } = data
+  const { current_piece, next_piece, board } = data
+
+  console.log(board)
+
+  switch (current_piece) {
+    case 'I':
+
+    case 'J':
+
+    case 'L':
+
+    case 'O':
+
+    case 'S':
+
+    case 'Z':
+
+    case 'T':
+  }
 
   return {
     locations: [
@@ -60,5 +78,60 @@ function determinePlacement(data) {
     ]
   }
 }
+
+const iPositions = (row, col) => [
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [3, 0]
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+    [0, 3]
+  ],
+  [
+    [0, 0],
+    [-1, 0],
+    [-2, 0],
+    [-3, 0]
+  ],
+  [
+    [0, 0],
+    [0, -1],
+    [0, -2],
+    [0, -3]
+  ]
+].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
+
+const oPositions = (row, col) => [
+  [
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+  ],
+  [
+    [0, 0],
+    [-1, 0],
+    [-1, 1],
+    [0, 1]
+  ],
+  [
+    [0, 0],
+    [0, -1],
+    [-1, 0],
+    [-1, -1]
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [-1, 0],
+    [-1, 1]
+  ]
+].map(positions => positions.map(([x, y]) => ({ row: row + x, col: col + y })))
+
 
 run()
