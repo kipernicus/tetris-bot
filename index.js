@@ -196,13 +196,25 @@ function isValidPlacement(placement, board) {
       col < 0 ||
       row >= board.length ||
       col >= board[0].length ||
-      board[row][col] !== null
+      board[row][col] !== null ||
+      hasObstructions(board, row, col)
     ) {
       valid = false;
     }
   }
   return valid;
 }
+
+function hasObstructions(board, row, col) {
+  let obstructions = false
+  for (let y = row; y < board.length; y++) {
+    if (board[y][col] !== null) {
+      obstructions = true
+    }
+  }
+  return obstructions
+}
+
 const iPositions = (row, col) => [
   [
     [0, 0],
