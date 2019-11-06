@@ -3,9 +3,10 @@ const axios = require("axios");
 async function run() {
   try {
     const create = process.env.CREATE;
-    const players = process.env.PLAYERS || 1;
+    const players = process.env.PLAYERS || 2;
     if (create) {
       const gameId = await createGame(players);
+      console.log('GAMEID', gameId)
       // const state = await getGameState(gameId)
       const state = await joinGame(gameId);
       let gameOver = false;
